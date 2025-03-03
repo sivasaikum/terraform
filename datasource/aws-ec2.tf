@@ -1,5 +1,5 @@
 resource "aws_instance" "demo" {
-    ami             = "data.aws_ami.devops-practice.id"
+    ami             = data.aws_ami.devops-practice.id
     instance_type   = "t3.micro"
     vpc_security_group_ids = [aws_security_group.allow_tls.id]
     tags = {
