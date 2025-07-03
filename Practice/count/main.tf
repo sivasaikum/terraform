@@ -1,5 +1,6 @@
 resource "aws_instance" "expense" {
-    count = 3
+    # count = 3
+    count = length(var.names)
     ami = "ami-09c813fb71547fc4f"
     instance_type = var.environment == "prod" ? "t3.large" : "t3.micro"
     vpc_security_group_ids = [aws_security_group.expense.id]
