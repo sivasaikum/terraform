@@ -8,8 +8,28 @@ resource "aws_instance" "main" {
         Terraform = true
 
     }
+    provisioner "local-exec" {
+        command = "echo ${self.public_ip} > inventory.ini"
+
+    }
+
+    connection {
+    type     = "ssh"
+    user     = "ec2-user"
+    password = "DevOps321"
+    host     = self.public_ip
+    }
+
+    provisioner "remote-exec" {
+        when = destroy
+        inline = [
+            "sudo systemctl stop nginx"
+        ]
+    }
     
 }
+
+
 
 resource "aws_security_group" "allow_tls" {
     name = "allow_tls"
@@ -19,6 +39,12 @@ resource "aws_security_group" "allow_tls" {
         from_port = 0
         to_port = 0
         protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"] 
+    }
+    ingress {
+        from_port = 80
+        to_port = 80
+        protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"] 
     }
 
